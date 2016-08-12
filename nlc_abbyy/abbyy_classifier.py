@@ -9,7 +9,7 @@ from .abbyy_exception import ABBYYException
 class ABBYYClassifier(BaseClassifier):
     _MAX_CLASSIFICAATION_DOCUMENTS = 100
 
-    def __init__(self, auth, endpoint='http://infoextractorapitest.abbyy.com/classifier',
+    def __init__(self, auth, endpoint,
                  classifier_id=None, new_classifier=None):
         """
         Initialize classifier
@@ -70,6 +70,7 @@ class ABBYYClassifier(BaseClassifier):
         self._wait_for_job_completion(job_id)
         if verbose:
             print("Train job completed")
+        self._abbyy.publish(self.id)
 
     def test(self, classes, verbose=False):
         """
@@ -93,7 +94,8 @@ class ABBYYClassifier(BaseClassifier):
         self._wait_for_job_completion(job_id)
         if verbose:
             print("Test job completed")
-        return 1 - self._abbyy.classifiers()[self.id].control_fmeasure
+        classifier = self._abbyy.classifiers()[self.id]
+        return 1 - classifier.control_fmeasure
 
     def classify(self, text):
         """

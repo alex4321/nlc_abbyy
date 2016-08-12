@@ -7,12 +7,13 @@ import os
 from .data import *
 from .abbyy_exception import ABBYYException
 import threading
+from transliterate import translit
 
 
 _LOCK = threading.Lock()
 
 class AbbyyNetwork:
-    def __init__(self, username, password, endpoint='http://infoextractorapitest.abbyy.com/classifier'):
+    def __init__(self, username, password, endpoint):
         """
         Initialize ABBYY SmartClassifier
         :param username: username
@@ -214,7 +215,7 @@ class AbbyyNetwork:
         :return: document file name
         :rtype: str
         """
-        return ''.join([char for char in content if char.isalpha()]) + '.txt'
+        return translit(''.join([char for char in content if char.isalpha()]) + '.txt', reversed=True)
 
     def upload_classifier_document(self, project_id, content):
         """
